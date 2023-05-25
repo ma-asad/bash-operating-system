@@ -18,17 +18,35 @@ while true; do
             fi
             ;;
         "Delete")
-            path=$(yad --entry --text "Enter full path of file or directory" --width=400 --height=300 --fontname="Sans 14" --center)
-            if [ "$path" != "" ]; then
-                if [[ "$path" == /sys/* || "$path" == /proc/* || "$path" == /boot/* ]]; then
-                    yad --info --text "Warning: System files cannot be deleted." --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
-                else
-                    if [ -e "$path" ]; then
-                        if yad --question --text "Are you sure you want to delete $path?" --width=400 --height=300 --fontname="Sans 14" --center; then
-                            rm -rf "$path"
-                        fi
+            del_choice=$(yad --list --text "Select an option" --radiolist --column "Pick" --column "Options" FALSE "File" FALSE "Directory" --separator="" --width=400 --height=300 --fontname="Sans 14" --center --print-column=2)
+            if [ "$del_choice" != "" ]; then
+                path=$(yad --entry --text "Enter full path of file or directory" --width=400 --height=100 --fontname="Sans 14" --center)
+                if [ "$path" != "" ]; then
+                    if [[ "$path" == /sys/* || "$path" == /proc/* || "$path" == /boot/* || "$path" == /bin/* || "$path" == /sbin/* ]]; then
+                        yad --info --text "Warning: System files cannot be deleted." --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
                     else
-                        yad --info --text "The provided path does not exist." --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
+                        if [ -d "$path" ] && [ "$del_choice" == "Directory" ]; then
+                            if yad --question --text "Are you sure you want to delete $path?" --width=400 --height=300 --fontname="Sans 14" --center; then
+                                rm -rf "$path"
+                            fi
+                        elif [ -f "$path" ] && [ "$del_choice" == "File" ]; then
+                            if yad --question --text "Are you sure you want to delete $path?" --width=400 --height=300 --fontname="Sans 14" --center; then
+                                rm "$path"
+                            fi
+                        elif [ -d "$path" ] && [ "$del_choice" == "File" ]; then
+                            if [ "$(ls -A $path)" ]; then
+                                file=$(yad --list --column "Files" $(ls $path) --separator="" --width=400 --height=300 --fontname="Sans 14" --center)
+                                if [ "$file" != "" ]; then
+                                    if yad --question --text "Are you sure you want to delete $file?" --width=400 --height=300 --fontname="Sans 14" --center; then
+                                        rm "$path/$file"
+                                    fi
+                                fi
+                            else
+                                yad --info --text "Directory is empty." --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
+                            fi
+                        else
+                            yad --info --text "The provided path does not exist." --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
+                        fi
                     fi
                 fi
             fi
