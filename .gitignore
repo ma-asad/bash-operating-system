@@ -1,0 +1,5 @@
+# Ignore files and folders in Coursework2 - Bash
+
+.idea/*
+.vscode/*
+.gitignore/*
