@@ -59,7 +59,8 @@ while true; do
             if [ "$game" != "" ]; then
                 case $game in
                     "Dunnet")
-                        emacs -batch -l dunnet
+                        xfce4-terminal -e 'emacs -f dunnet'
+
                         ;;
                     "Game 1")
                         /path/to/game1.sh
