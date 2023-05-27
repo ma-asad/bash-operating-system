@@ -40,6 +40,28 @@ while true; do
                         # The rest of this block handles the deletion based on the type of the path (file or directory)
                         # and the user's choice ("File" or "Directory").
                         # The rm command is used to delete files and directories.
+                        if [ -d "$path" ] && [ "$del_choice" == "Directory" ]; then
+                            if yad --question --text "Are you sure you want to delete $path?" --width=400 --height=300 --fontname="Sans 14" --center; then
+                                rm -rf "$path"
+                            fi
+                        elif [ -f "$path" ] && [ "$del_choice" == "File" ]; then
+                            if yad --question --text "Are you sure you want to delete $path?" --width=400 --height=300 --fontname="Sans 14" --center; then
+                                rm "$path"
+                            fi
+                        elif [ -d "$path" ] && [ "$del_choice" == "File" ]; then
+                            if [ "$(ls -A $path)" ]; then
+                                file=$(yad --list --column "Files" $(ls $path) --separator="" --width=400 --height=300 --fontname="Sans 14" --center)
+                                if [ "$file" != "" ]; then
+                                    if yad --question --text "Are you sure you want to delete $file?" --width=400 --height=300 --fontname="Sans 14" --center; then
+                                        rm "$path/$file"
+                                    fi
+                                fi
+                            else
+                                yad --info --text "Directory is empty." --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
+                            fi
+                        else
+                            yad --info --text "The provided path does not exist." --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
+                        fi
                     fi
                 fi
             fi
@@ -56,7 +78,26 @@ while true; do
                 case $game in
                     # Each game is started differently.
                     # The "emacs -f" command starts emacs and calls a function.
-                    # The "full-path/game/*.exe" presumably starts a game executable.
+
+                    "Dunnet")
+                        xfce4-terminal -e 'emacs -f dunnet'
+                        ;;
+                    "Tetris")
+                        xfce4-terminal -e 'emacs -f tetris'
+                        ;;
+                    "Snake")
+                        xfce4-terminal -e 'emacs -f snake'
+                        ;;
+                    "Gomoku")
+                        xfce4-terminal -e 'emacs -f gomoku'
+                        ;;
+                    "Guess The Number")
+                        "full-path/game/guess_the_num.exe"
+                        ;;
+                    "Tic-Tac-Toe")
+                        "full-path/game/tic_tac_toe.exe"
+                        ;;
+                    # The "full-path/game/*.exe" starts the game executable.
                 esac
             fi
             ;;
