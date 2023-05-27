@@ -40,7 +40,7 @@ delete () {
         elif [ -d "$path" ] && [ "$del_choice" == "File" ]; then
           if [ "$(ls -A $path)" ]; then
             # List all files in directory 
-            file=$(yad --list --column "Files" $(ls $path) --separator="" --width=400 --height=300 --fontname="Sans 14" --center)
+            file=$(yad --list --column "Files" $(ls -p $path | grep -v /) --separator="" --width=400 --height=300 --fontname="Sans 14" --center)
             if [ "$file" != "" ]; then
               # Asks User for confirmation and delete specific a file in directory 
               if yad --question --text "Are you sure you want to delete $file?" --width=400 --height=300 --fontname="Sans 14" --center; then
