@@ -146,3 +146,5 @@ int main(void) {
     
     return 0;  // End the program.
 }
+
+// create executeable: gcc -o tic_tac_toe.exe tic_tac_toe.c -lraylib -lm
