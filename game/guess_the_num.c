@@ -61,8 +61,42 @@ int main()
             {
                 guess = guess * 10 + 0;
             }
-            // The same is done for all other number keys (1-9)
-            //...
+            if (IsKeyPressed(KEY_ONE))
+            {
+                guess = guess * 10 + 1;
+            }
+            if (IsKeyPressed(KEY_TWO))
+            {
+                guess = guess * 10 + 2;
+            }
+            if (IsKeyPressed(KEY_THREE))
+            {
+                guess = guess * 10 + 3;
+            }
+            if (IsKeyPressed(KEY_FOUR))
+            {
+                guess = guess * 10 + 4;
+            }
+            if (IsKeyPressed(KEY_FIVE))
+            {
+                guess = guess * 10 + 5;
+            }
+            if (IsKeyPressed(KEY_SIX))
+            {
+                guess = guess * 10 + 6;
+            }
+            if (IsKeyPressed(KEY_SEVEN))
+            {
+                guess = guess * 10 + 7;
+            }
+            if (IsKeyPressed(KEY_EIGHT))
+            {
+                guess = guess * 10 + 8;
+            }
+            if (IsKeyPressed(KEY_NINE))
+            {
+                guess = guess * 10 + 9;
+            }
         }
         
         // Handle the backspace key, which removes the last digit from the guess
