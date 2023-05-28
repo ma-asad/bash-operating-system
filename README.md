@@ -137,7 +137,7 @@ Choose a game to play.
 This script includes the following functions:
 
 - `date_time`: Uses the `yad` tool to display the current date and time in a dialog box.
-- `calendar`: Displays a calendar where you can select a date. if a date is selected, it will then be shown in a dialog box.
+- `calendar`: Displays a calendar where you can select a date, add, delete and view events. if a date is selected, it will then be shown along its respective event if any in a dialog box.
 - `delete`: Allows deletion of a file or directory. It checks the entered path to prevent deletion of system files or directories and asks for confirmation before deletion of non system files.
 - `sys_info`: Displays the system information by running the `sys_info.sh` script.
 - `games`: Allow user to select and play a game. Emacs games are run in a new terminal window, while Guess The Number and Tic-Tac-Toe games run directly in the terminal.
@@ -222,4 +222,5 @@ In the script, `xdg-open` is used to open a URL in the user's default web browse
   - Refined `main.sh` and `sys_info.sh`.
   - Developed two games: Tic-Tac-Toe and Guess The Number, in C.
   - Modularized `main.sh` by refactoring the code into functions.
+  - Added Event option in `main.sh` for the Calendar option.
 
