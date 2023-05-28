@@ -26,7 +26,7 @@ view_calendar() {
 # Function to display the calendar and add an event on a specific date
 set_event_calendar() {
     # Asks user for which date to view
-    chosen_date=$(yad --calendar --width=500 --height=500 --fontname="Sans 14" --center)
+    chosen_date=$(yad --calendar --width=500 --height=300 --fontname="Sans 14" --center)
     if [ "$chosen_date" != "" ]; then
         additional_info=$(yad --form --title="Additional Information" --field="Additional Information":TXT --width=400 --height=300 --fontname="Sans 14" --center)
 
@@ -44,7 +44,7 @@ set_event_calendar() {
 # Function to display the calendar and delete all events on a specific date
 delete_event_calendar() {
     # Asks user for which date to view
-    search_date=$(yad --calendar --width=500 --height=500 --fontname="Sans 14" --center)
+    search_date=$(yad --calendar --width=500 --height=200 --fontname="Sans 14" --center)
     if [ "$search_date" != "" ]; then
         # Searches the file "events.txt" for any dates matching the variable search_date
         # grep is used to search the text file for a variable equal to search_date
@@ -55,9 +55,9 @@ delete_event_calendar() {
             grep -v "^$search_date:" events.txt >events_tmp.txt
             # mv renames "events_tmp.txt" back into "events.txt"
             mv events_tmp.txt events.txt
-            yad --info --text="Events on $search_date have been deleted" --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
+            yad --info --text="Events on $search_date have been deleted" --width=400 --height=100 --fontname="Sans 14" --center --button="Return":0
         else
-            yad --info --text="No events found on $search_date" --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
+            yad --info --text="No events found on $search_date" --width=400 --height=100 --fontname="Sans 14" --center --button="Return":0
         fi
     fi
 }
@@ -77,9 +77,15 @@ delete() {
                 yad --info --text "Warning: System files cannot be deleted." --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
             else
                 if [ -d "$path" ] && [ "$del_choice" == "Directory" ]; then
-                    # Asks User for confirmation and deletes directory
-                    if yad --question --text "Are you sure you want to delete $path?" --width=400 --height=300 --fontname="Sans 14" --center; then
-                        rm -rf "$path"
+                    # Check if there are directories inside the directory
+                    if [ "$(find $path -mindepth 1 -type d)" ]; then
+                        dir_list=$(find $path -mindepth 1 -type d)
+                        yad --info --text "Warning: There are directories inside the directory:\n$dir_list" --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
+                    else
+                        # Asks User for confirmation and deletes directory
+                        if yad --question --text "Are you sure you want to delete $path?" --width=400 --height=300 --fontname="Sans 14" --center; then
+                            rm -rf "$path"
+                        fi
                     fi
                 elif [ -f "$path" ] && [ "$del_choice" == "File" ]; then
                     # Asks User for confirmation and deletes file
@@ -91,18 +97,18 @@ delete() {
                         # List all files in directory
                         file=$(yad --list --column "Files" $(ls $path) --separator="" --width=400 --height=300 --fontname="Sans 14" --center)
                         if [ "$file" != "" ]; then
-                            # Asks User for confirmation and delete specific a file in directory
-                            if yad --question --text "Are you sure you want to delete $file?" --width=400 --height=300 --fontname="Sans 14" --center; then
+                            # Asks User for confirmation and delete a specific file in directory
+                            if yad --question --text "Are you sure you want to delete $file?" --width=400 --height=300 --fontname="Sans 20" --center; then
                                 rm "$path/$file"
                             fi
                         fi
                     else
                         # Display message for an empty directory
-                        yad --info --text "Directory is empty." --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
+                        yad --info --text "Directory is empty." --width=400 --height=200 --fontname="Sans 20" --center --button="Return":0
                     fi
                 else
                     # Display message for a non-existing path
-                    yad --info --text "The provided path does not exist." --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
+                    yad --info --text "The provided path does not exist." --width=400 --height=200 --fontname="Sans 20" --center --button="Return":0
                 fi
             fi
         fi
@@ -117,7 +123,7 @@ sys_info() {
 # Function to play different games
 games() {
     # Allow the user to select a game to play.
-    game=$(yad --list --text "Choose a game" --radiolist --column "Pick" --column "Game" FALSE "Dunnet" FALSE "Tetris" FALSE "Snake" FALSE "Gomoku" FALSE "Guess The Number" FALSE "Tic-Tac-Toe" --separator="" --width=400 --height=400 --fontname="Sans 14" --center --print-column=2)
+    game=$(yad --list --text "Choose a game" --radiolist --column "Pick" --column "Game" FALSE "Dunnet" FALSE "Tetris" FALSE "Snake" FALSE "Gomoku" FALSE "Guess The Number" FALSE "Tic-Tac-Toe" --separator="" --width=400 --height=300 --fontname="Sans 14" --center --print-column=2)
     # If the user picked a game, start it.
     if [ "$game" != "" ]; then
         case $game in
@@ -183,7 +189,7 @@ main() {
             date_time
             ;;
         "Calendar")
-            calendar_choice=$(yad --list --text "Choose a game" --radiolist --column "Pick" --column "Option" FALSE "View Calendar" FALSE "Set Event" FALSE "Delete Event" --separator="" --width=400 --height=400 --fontname="Sans 14" --center --print-column=2)
+            calendar_choice=$(yad --list --text "Pick an option" --radiolist --column "Pick" --column "Option" FALSE "View Calendar" FALSE "Set Event" FALSE "Delete Event" --separator="" --width=400 --height=220 --fontname="Sans 14" --center --print-column=2)
             case $calendar_choice in
             "View Calendar")
                 view_calendar
