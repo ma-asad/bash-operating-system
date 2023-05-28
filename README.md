@@ -1,10 +1,6 @@
 # Fun With Bash
 
-<<<<<<< HEAD
-"Fun With Bash" is a versatile script developed to handle different tasks. This script presents an interactive dialog-based interface using YAD that lets you access the date and time, a calendar, shows the system information, delete a file or directory, browse the web and play some cool classic games.
-=======
 "Fun With Bash" is a versatile script developed to handle different tasks. This script presents an interactive dialog-based interface using YAD that lets you access the date and time, a calendar, delete a file or directory, shows the system information, browse the web and play some cool classic games.
->>>>>>> d29bb3101e5007a7f7d9d486be8f6149fa43b9e2
 
 ## Table of Contents
 
@@ -13,10 +9,6 @@
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contribution](#contribution)
-<<<<<<< HEAD
-- [License](#license)
-=======
->>>>>>> d29bb3101e5007a7f7d9d486be8f6149fa43b9e2
 
 ## Features
 
@@ -33,11 +25,7 @@ The software offers the following functionalities:
 ## Dependencies
 
 - **Bash:** The scripts are written in Bash.
-<<<<<<< HEAD
-- **Yad:** Yad (Yet Another Dialog) is a tool for creating graphical dialogs from shell scripts. It is a fork of Zenity dialog with more features and improvements.
-=======
 - **Yad:** Yad (Yet Another Dialog) is a tool for creating graphical dialogs from shell scripts.
->>>>>>> d29bb3101e5007a7f7d9d486be8f6149fa43b9e2
 
     Install by using the command:
 
@@ -67,31 +55,15 @@ The software offers the following functionalities:
 
 ## Installation
 
-<<<<<<< HEAD
-1. Ensure the bash files (`main.sh` and `sys_info.sh`) and the games (`tic_tac_toe.exe` and `guess_the_num.exe`) are executable. If not, use the following command to make them executable:
-
-   ```bash
-   chmod +x main.sh sys_info.sh
-=======
 - Ensure the bash files (`main.sh` and `sys_info.sh`) and the games (`tic_tac_toe.exe` and `guess_the_num.exe`) are executable. If not, use the following command to make them executable:
 
    ```bash
    chmod +x "/path/main/main.sh" "/path/main/sys_info.sh"
->>>>>>> d29bb3101e5007a7f7d9d486be8f6149fa43b9e2
    ```
    ```bash
    chmod +x "/path/game/guess_the_num.exe"  "path/game/tic_tac_toe.exe"
    ```
 
-<<<<<<< HEAD
-2. Run `main.sh` to start the utility suite.
-
-    ```bash
-    ./main.sh
-    ```
-
-=======
->>>>>>> d29bb3101e5007a7f7d9d486be8f6149fa43b9e2
 ## Usage
 
 To start Fun With Bash software, navigate to the directory (`main`) containing the `main.sh` script and run:
@@ -116,11 +88,7 @@ The software will present a list of options:
 2. **Tetris**
 3. **Snake**
 4. **Gomoku**
-<<<<<<< HEAD
-5. **Guess The Number**.
-=======
 5. **Guess The Number**
->>>>>>> d29bb3101e5007a7f7d9d486be8f6149fa43b9e2
 6. **Tic-Tac-Toe**
 
 Choose a game to play.
