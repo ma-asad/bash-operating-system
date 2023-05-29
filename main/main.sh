@@ -62,62 +62,109 @@ delete_event_calendar() {
     fi
 }
 
-# Function to delete files or directories
-delete() {
-    # Asks User for the type of deletion (file or directory)
-    del_choice=$(yad --list --text "Select an option" --radiolist --column "Pick" --column "Options" FALSE "File" FALSE "Directory" --separator="" --width=400 --height=200 --fontname="Sans 14" --center --print-column=2)
+# Function to handle the Calendar menu
+calendar() {
+    while true; do
+        calendar_choice=$(yad --list --text "Pick an option" --radiolist --column "Pick" --column "Option" FALSE "View Calendar" FALSE "Set Event" FALSE "Delete Event" FALSE "Return" --separator="" --width=400 --height=220 --fontname="Sans 14" --center --print-column=2)
+        case $calendar_choice in
+        "View Calendar")
+            view_calendar
+            ;;
+        "Set Event")
+            set_event_calendar
+            ;;
+        "Delete Event")
+            delete_event_calendar
+            ;;
+        "Return")
+            break
+            ;;
+        "")
+            break
+            ;;
+        esac
+    done
+}
 
-    if [ "$del_choice" != "" ]; then
-        # Asks User for the path of the file or directory to be deleted
-        path=$(yad --entry --text "Enter full path of file or directory" --width=400 --height=100 --fontname="Sans 14" --center)
 
-        if [ "$path" != "" ]; then
-            if [[ "$path" == /sys/* || "$path" == /proc/* || "$path" == /boot/* || "$path" == /bin/* || "$path" == /sbin/* ]]; then
-                # Displays warning for system file deletion
-                yad --info --text "Warning: System files cannot be deleted." --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
-            else
-                if [ -d "$path" ] && [ "$del_choice" == "Directory" ]; then
-                    # Check if there are directories inside the directory
-                    if [ "$(find $path -mindepth 1 -type d)" ]; then
-                        dir_list=$(find $path -mindepth 1 -type d)
-                        yad --info --text "Warning: There are directories inside the directory:\n$dir_list" --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
-                    else
-                        # Asks User for confirmation and deletes directory
-                        if yad --question --text "Are you sure you want to delete $path?" --width=400 --height=300 --fontname="Sans 14" --center; then
-                            rm -rf "$path"
-                        fi
-                    fi
-                elif [ -f "$path" ] && [ "$del_choice" == "File" ]; then
-                    # Asks User for confirmation and deletes file
-                    if yad --question --text "Are you sure you want to delete $path?" --width=400 --height=300 --fontname="Sans 14" --center; then
-                        rm "$path"
-                    fi
-                elif [ -d "$path" ] && [ "$del_choice" == "File" ]; then
-                    if [ "$(ls -A $path)" ]; then
-                        # List all files in directory
-                        file=$(yad --list --column "Files" $(ls $path) --separator="" --width=400 --height=300 --fontname="Sans 14" --center)
-                        if [ "$file" != "" ]; then
-                            # Asks User for confirmation and delete a specific file in directory
-                            if yad --question --text "Are you sure you want to delete $file?" --width=400 --height=300 --fontname="Sans 20" --center; then
-                                rm "$path/$file"
-                            fi
-                        fi
-                    else
-                        # Display message for an empty directory
-                        yad --info --text "Directory is empty." --width=400 --height=200 --fontname="Sans 20" --center --button="Return":0
-                    fi
-                else
-                    # Display message for a non-existing path
-                    yad --info --text "The provided path does not exist." --width=400 --height=200 --fontname="Sans 20" --center --button="Return":0
-                fi
+# Function to delete files and directories
+delete_item() {
+    local path=$1
+
+    # Check if it is a directory
+    if [ -d "$path" ]; then
+        # Check if there are directories inside the directory
+        if [ "$(find "$path" -mindepth 1 -type d)" ]; then
+            dir_list=$(find "$path" -mindepth 1 -type d)
+            yad --info --text "Warning: There are directories inside the directory:\n$dir_list" --width=400 --height=300 --fontname="Sans 14" --center --button="Return":0
+        else
+            # Ask user for confirmation and delete the directory
+            if yad --question --text "Are you sure you want to delete $path?" --width=400 --height=300 --fontname="Sans 14" --center; then
+                rm -rf "$path" || yad --error --text "Failed to delete directory: $path"
             fi
+        fi
+    fi
+
+    # Check if it is a file
+    if [ -f "$path" ]; then
+        # Ask user for confirmation and delete the file
+        if yad --question --text "Are you sure you want to delete $path?" --width=400 --height=300 --fontname="Sans 14" --center; then
+            rm "$path" || yad --error --text "Failed to delete file: $path"
         fi
     fi
 }
 
+# File management function (includes the delete_item function)
+file_management() {
+    while true; do
+        del_choice=$(yad --list --text "Select an option" --radiolist --column "Pick" --column "Options" FALSE "File or Directory" FALSE "Explorer mode" --separator="" --width=400 --height=200 --fontname="Sans 14" --center --print-column=2)
+        if [ -z "$del_choice" ]; then
+            break
+        fi
+
+        if [ "$del_choice" == "Explorer mode" ]; then
+            nautilus
+            if [ -z "$path" ]; then
+                continue # return to the previous menu
+            fi
+
+            delete_item "$path"
+        else
+            action=$(yad --entry --text "Enter the directory path or press okay to use the current directory" --width=400 --height=100 --fontname="Sans 14" --center --button=Cancel:1 --button=Okay:0)
+
+            ret=$?
+
+            if [ $ret -eq 1 ]; then
+                continue # return to the previous menu
+            fi
+
+            if [ -z "$action" ]; then
+                dir_path=$(pwd)
+            else
+                dir_path="$action"
+            fi
+
+            if [ ! -d "$dir_path" ]; then
+                yad --info --text "The provided directory path does not exist." --width=400 --height=200 --fontname="Sans 20" --center --button="Return":0
+                continue
+            fi
+
+            path=$(yad --list --column "Files and Directories" $(ls "$dir_path") --separator="" --width=400 --height=300 --fontname="Sans 14" --center)
+            if [ -z "$path" ]; then
+                continue # return to the previous menu
+            fi
+
+            path="$dir_path/$path"
+
+            delete_item "$path"
+        fi
+    done
+}
+
+
 # Function to display System Info
 sys_info() {
-    "$PWD/sys_info.sh"
+    "/home/asad/Documents/CST1500/Coursework 2/Coursework2 - Bash/main/sys_info.sh"
 }
 
 # Function to play different games
@@ -176,11 +223,11 @@ main() {
     while true; do
         # Display a dialog with several options for the user to pick from.
         # The result of their selection is stored in the variable "choice".
-        choice=$(yad --list --text "Select an option" --radiolist --column "Pick" --column "Options" FALSE "Date/time" FALSE "Calendar" FALSE "Delete" FALSE "System Info" FALSE "Play a game" FALSE "Browse the web" FALSE "Exit" --separator="" --width=400 --height=350 --fontname="Sans 14" --center --print-column=2)
+        choice=$(yad --list --text "Select an option" --radiolist --column "Pick" --column "Options" FALSE "Date/time" FALSE "Calendar" FALSE "File Management" FALSE "System Info" FALSE "Play a game" FALSE "Browse the web" FALSE "Git Options" FALSE "Exit" --separator="" --width=400 --height=400 --fontname="Sans 14" --center --print-column=2)
 
         # If the user didn't make a selection (closed the dialog), restart the loop.
         if [ "$choice" == "" ]; then
-            continue
+            break
         fi
 
         # Handle the user's selection based on what they chose
@@ -189,21 +236,10 @@ main() {
             date_time
             ;;
         "Calendar")
-            calendar_choice=$(yad --list --text "Pick an option" --radiolist --column "Pick" --column "Option" FALSE "View Calendar" FALSE "Set Event" FALSE "Delete Event" --separator="" --width=400 --height=220 --fontname="Sans 14" --center --print-column=2)
-            case $calendar_choice in
-            "View Calendar")
-                view_calendar
-                ;;
-            "Set Event")
-                set_event_calendar
-                ;;
-            "Delete Event")
-                delete_event_calendar
-                ;;
-            esac
+            calendar
             ;;
-        "Delete")
-            delete
+        "File Management")
+            file_management
             ;;
         "System Info")
             sys_info
@@ -214,6 +250,10 @@ main() {
         "Browse the web")
             web_browse
             ;;
+        "Git Options")
+            "/home/asad/Documents/CST1500/Coursework 2/Coursework2 - Bash/main/git_options.sh"
+            ;;
+           
         "Exit")
             quit
             ;;
