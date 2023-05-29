@@ -221,7 +221,7 @@ main() {
     while true; do
         # Display a dialog with several options for the user to pick from.
         # The result of their selection is stored in the variable "choice".
-        choice=$(yad --list --text "Select an option" --radiolist --column "Pick" --column "Options" FALSE "Date/time" FALSE "Calendar" FALSE "File Management" FALSE "System Info" FALSE "Play a game" FALSE "Browse the web" FALSE "Git Options" FALSE "Convert MP4 to MP3" FALSE "Exit" --separator="" --width=400 --height=400 --fontname="Sans 14" --center --print-column=2)
+        choice=$(yad --list --text "Select an option" --radiolist --column "Pick" --column "Options" FALSE "Date/time" FALSE "Calendar" FALSE "File Management" FALSE "System Info" FALSE "Play a game" FALSE "Browse the web" FALSE "Git Options" FALSE "Convert MP4 to Audio" FALSE "Exit" --separator="" --width=400 --height=400 --fontname="Sans 14" --center --print-column=2)
 
         # If the user didn't make a selection (closed the dialog), restart the loop.
         if [ "$choice" == "" ]; then
@@ -251,7 +251,7 @@ main() {
         "Git Options")
             "/home/asad/Documents/CST1500/Coursework 2/Coursework2 - Bash/main/git_options.sh"
             ;;
-        "Convert MP4 to MP3")
+        "Convert MP4 to Audio")
             "/home/asad/Documents/CST1500/Coursework 2/Coursework2 - Bash/main/extract_audio.sh"
             ;;
         "Exit")
