@@ -117,7 +117,7 @@ delete_item() {
 # File management function (includes the delete_item function)
 file_management() {
     while true; do
-        del_choice=$(yad --list --text "Select an option" --radiolist --column "Pick" --column "Options" FALSE "File or Directory" FALSE "Explorer mode" --separator="" --width=400 --height=200 --fontname="Sans 14" --center --print-column=2)
+        del_choice=$(yad --list --text "Select an option" --radiolist --column "Pick" --column "Options" FALSE "Delete Item" FALSE "Explorer mode" --separator="" --width=400 --height=200 --fontname="Sans 14" --center --print-column=2)
         if [ -z "$del_choice" ]; then
             break
         fi
@@ -127,8 +127,6 @@ file_management() {
             if [ -z "$path" ]; then
                 continue # return to the previous menu
             fi
-
-            delete_item "$path"
         else
             action=$(yad --entry --text "Enter the directory path or press okay to use the current directory" --width=400 --height=100 --fontname="Sans 14" --center --button=Cancel:1 --button=Okay:0)
 
@@ -223,7 +221,7 @@ main() {
     while true; do
         # Display a dialog with several options for the user to pick from.
         # The result of their selection is stored in the variable "choice".
-        choice=$(yad --list --text "Select an option" --radiolist --column "Pick" --column "Options" FALSE "Date/time" FALSE "Calendar" FALSE "File Management" FALSE "System Info" FALSE "Play a game" FALSE "Browse the web" FALSE "Git Options" FALSE "Exit" --separator="" --width=400 --height=400 --fontname="Sans 14" --center --print-column=2)
+        choice=$(yad --list --text "Select an option" --radiolist --column "Pick" --column "Options" FALSE "Date/time" FALSE "Calendar" FALSE "File Management" FALSE "System Info" FALSE "Play a game" FALSE "Browse the web" FALSE "Git Options" FALSE "Convert MP4 to MP3" FALSE "Exit" --separator="" --width=400 --height=400 --fontname="Sans 14" --center --print-column=2)
 
         # If the user didn't make a selection (closed the dialog), restart the loop.
         if [ "$choice" == "" ]; then
@@ -253,13 +251,16 @@ main() {
         "Git Options")
             "/home/asad/Documents/CST1500/Coursework 2/Coursework2 - Bash/main/git_options.sh"
             ;;
-           
+        "Convert MP4 to MP3")
+            "/home/asad/Documents/CST1500/Coursework 2/Coursework2 - Bash/main/extract_audio.sh"
+            ;;
         "Exit")
             quit
             ;;
         esac
     done
 }
+
 
 # Call the main function to start the script
 main
