@@ -11,7 +11,7 @@ The software offers the following functionalities:
 
 1. **Date/Time:** Displays the current date and time.
 2. **Calendar:** Allows you to view and manage events in a calendar.
-3. File management:** Provides options to manage files.
+3. **File management:** Provides options to manage files.
 4. **System Info:** Retrieves system information such as the operating system type, CPU info, memory info, hard disk info, and file system info.
 5. **Play a game:** Offers a selection of games to play.
 6. **Browse the web:** Allows you to enter a keyword or a URL to open in your default web browser.
