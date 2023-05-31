@@ -14,9 +14,11 @@ int main()
     bool is_lower = false; // If the guess is higher than the secret number
     bool is_higher = false; // If the guess is lower than the secret number
     bool is_win = false; // If the player has guessed the number
+    bool is_loss = false; // If the player has exhausted all attempts
+    bool reset_game = false; // If the player wants to reset the game
 
     // Initialize the window with the given screen size and name
-    InitWindow(screenWidth, screenHeight, "Guess the Number");
+    InitWindow(screenWidth, screenHeight, "Guess the Number (1-100)");
     SetTargetFPS(60); // Set the game to run at 60 frames per second
     
     // Generate a random number between 1 and 100
@@ -30,32 +32,8 @@ int main()
     // Main game loop
     while (!WindowShouldClose())
     {
-        // Handle key presses
-        if (IsKeyPressed(KEY_ENTER))
-        {
-            // Check the player's guess
-            if (guess == secretNumber) 
-            {
-                is_win = true; // Player has won
-            }
-            else if (guess > secretNumber)
-            {
-                is_lower = true; // Guess is too high
-                is_higher = false;
-            }
-            else if (guess < secretNumber)
-            {
-                is_higher = true; // Guess is too low
-                is_lower = false;
-            }
-
-            // Reset the guess and increment attempts
-            guess = 0;
-            attempts++;
-        }
-
         // Update the guess based on the number keys pressed
-        if (guess <= 11) // Limit the maximum guess to 11
+        if (attempts < 11) // Limit the maximum guess attempts to 11
         {
             if (IsKeyPressed(KEY_ZERO))
             {
@@ -97,12 +75,49 @@ int main()
             {
                 guess = guess * 10 + 9;
             }
+
+            // Handle key presses
+            if (IsKeyPressed(KEY_ENTER))
+            {
+                // Check the player's guess
+                if (guess == secretNumber) 
+                {
+                    is_win = true; // Player has won
+                }
+                else if (guess > secretNumber)
+                {
+                    is_lower = true; // Guess is too high
+                    is_higher = false;
+                }
+                else if (guess < secretNumber)
+                {
+                    is_higher = true; // Guess is too low
+                    is_lower = false;
+                }
+
+                // Increment attempts
+                attempts++;
+                
+                // Reset the guess after the check and feedback
+                guess = 0; 
+            }
         }
-        
+
+        else if (attempts == 11) // If attempts have reached 11
+        {
+            is_loss = true; // Player has lost
+        }
+
         // Handle the backspace key, which removes the last digit from the guess
         if (IsKeyPressed(KEY_BACKSPACE))
         {
             guess = guess / 10;
+        }
+        
+        // Handle reset game press
+        if (IsKeyPressed(KEY_R)) // Assuming R key is for reset
+        {
+            reset_game = true; // Player wants to reset the game
         }
         
         // If the right shift key is held down, show the secret number
@@ -118,25 +133,41 @@ int main()
         ClearBackground(RAYWHITE);
 
         // Draw various elements to the screen, including the number of attempts, the current guess, and messages based on the game state
-        DrawText("Guess the Number", 235, 10, 35, BLACK);
+        DrawText("Guess the Number (1-100)", 160, 10, 35, BLACK);
         DrawText(TextFormat("Attempts: %d", attempts), 10, 40, 25, BLACK);
         DrawText(TextFormat("Guess: %d", guess), 335, 200, 30, BLACK);
+        DrawText(TextFormat("Input: %d", guess), 335, 240, 20, GRAY); // Display user's input
 
         // Display messages based on whether the guess is too high, too low, or correct
         if (is_win)
         {
             is_lower = false;
             is_higher = false;
-            DrawText("Congratulations! You guessed the number",85, 80, 30,BLACK);
+            DrawText("Congratulations! You guessed the number", 85, 80, 30, BLACK);
             ClearBackground(GREEN); // Change the background color to indicate a win
         }        
         else if (is_higher)
         {
-            DrawText("Too low! Try again.",240, 80, 30,RED);
+            DrawText("Too low! Try again.", 240, 80, 30, RED);
         }
         else if (is_lower)
         {
-            DrawText("Too high! Try again.",240, 80, 30,GOLD);
+            DrawText("Too high! Try again.", 240, 80, 30, GOLD);
+        }
+        else if (is_loss)
+        {
+            DrawText("You've run out of attempts! Press R to reset.", 160, 300, 20, RED);
+        }
+
+        // If player wants to reset the game
+        if (reset_game)
+        {
+            guess = 0;
+            attempts = 0;
+            is_win = false;
+            is_loss = false;
+            secretNumber = rand() % 100 + 1; // Generate a new secret number
+            reset_game = false;
         }
 
         // Finish drawing to the screen
@@ -145,7 +176,7 @@ int main()
 
     // Close the window when the game loop ends
     CloseWindow();
-
+    
     return 0; // Indicate that the program has ended successfully
 }
 
