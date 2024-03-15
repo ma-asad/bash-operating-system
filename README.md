@@ -36,7 +36,7 @@ The software offers the following functionalities:
 
 ## Usage
 
-To start the "Fun With Bash" software, navigate to the directory containing the `main.sh` script and run:
+To use the "Fun With Bash" software, navigate to the directory containing the `main.sh` script and run:
 ```bash
 ./main.sh
 ```
